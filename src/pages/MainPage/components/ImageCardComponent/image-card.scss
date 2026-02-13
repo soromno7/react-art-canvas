@@ -1,0 +1,42 @@
+.image_card_item {
+  width: 400px;
+  box-shadow: 0px 4px 8px 0px rgba(34, 60, 80, 0.2);
+  $cardBorderRadius: 10px;
+  border-radius: $cardBorderRadius;
+
+  .card_item {
+    &__image > img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-top-left-radius: $cardBorderRadius;
+      border-top-right-radius: $cardBorderRadius;
+    }
+    &__data {
+      padding: 10px 15px;
+    }
+  }
+
+  .card_item {
+    &_data__top {
+      display: flex;
+      justify-content: space-between;
+    }
+
+    &__user {
+      display: flex;
+      align-items: center;
+    }
+
+    &__title {
+      text-align: center;
+      overflow-wrap: break-word;
+    }
+  }
+
+  .card_item_user {
+    &__name {
+        margin-left: 7px;
+    }
+  }
+}
