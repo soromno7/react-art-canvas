@@ -1,60 +1,30 @@
-import { TfiEmail } from "react-icons/tfi";
-import { TfiLock } from "react-icons/tfi";
-import { PiEyeLight } from "react-icons/pi";
-import { PiEyeSlash } from "react-icons/pi";
-
 import "./auth.scss";
 import "./authAnimation.scss";
-import { Link } from "react-router-dom";
+import { FcGoogle } from "react-icons/fc";
+import { useContext } from "react";
+import { Context } from "../../main";
+import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 
 function LoginPage() {
+  const firebaseContext = useContext(Context);
+
+  const loginFunc = async () => {
+    if (firebaseContext) {
+      const provider = new GoogleAuthProvider();
+      const user = await signInWithPopup(firebaseContext.auth, provider);
+      console.log(user);
+    }
+  };
   return (
     <div className="login">
       <div className="login__wrapper">
-        <h1>Login</h1>
-        <form className="login__form">
-          <div className="form__group">
-            <label htmlFor="email" className="group__label">
-              Email
-            </label>
-            <div className="group-input__wrapper">
-              <TfiEmail className="input__icon" />
-              <input
-                type="email"
-                id="email"
-                name="email"
-                className="group__input"
-                placeholder="Email"
-                required
-                autoComplete="email"
-              />
-            </div>
-            <span className="error__message" id="emailError"></span>
-          </div>
-          <div className="form__group">
-            <div className="group__forgot-password">
-              <label htmlFor="password" className="group__label">
-                Password
-              </label>
-              <Link to="">Forgot password?</Link>
-            </div>
-            <div className="group-input__wrapper">
-              <TfiLock className="input__icon" />
-              <input
-                type="password"
-                id="password"
-                name="password"
-                className="group__input"
-                placeholder="Password"
-                required
-                autoComplete="password"
-              />
-              <PiEyeLight className="input__icon right" />
-              <PiEyeSlash className="input__icon right" />
-            </div>
-            <span className="error__message" id="passwordError"></span>
-          </div>
-        </form>
+        <h1>Enter using your Google account</h1>
+        <div className="login__form">
+          <button className="login__button" onClick={loginFunc}>
+            <span>Sign in</span>
+            <FcGoogle className="login__icon" />
+          </button>
+        </div>
       </div>
     </div>
   );

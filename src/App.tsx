@@ -3,12 +3,28 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import "./reset.scss";
 import MainPage from "./pages/MainPage/MainPage";
 import LoginPage from "./pages/AuthPage/AuthPage";
+import PublicRoute from "./components/Routes/PublicRote";
+import PrivateRoute from "./components/Routes/PrivateRoute";
 function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/login" element={<LoginPage />} />
-        <Route path="/" element={<LayoutPage />}>
+        <Route
+          path="/login"
+          element={
+            <PublicRoute>
+              <LoginPage />
+            </PublicRoute>
+          }
+        />
+        <Route
+          path="/"
+          element={
+            <PrivateRoute>
+              <LayoutPage />
+            </PrivateRoute>
+          }
+        >
           <Route index element={<MainPage />} />
         </Route>
       </Routes>
