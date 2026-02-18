@@ -5,6 +5,7 @@ import MainPage from "./pages/MainPage/MainPage";
 import LoginPage from "./pages/AuthPage/AuthPage";
 import PublicRoute from "./components/Routes/PublicRote";
 import PrivateRoute from "./components/Routes/PrivateRoute";
+import PaintPage from "./pages/PaintPage/PaintPage";
 function App() {
   return (
     <BrowserRouter>
@@ -26,6 +27,7 @@ function App() {
           }
         >
           <Route index element={<MainPage />} />
+          <Route path="paint" element={<PaintPage />} />
         </Route>
       </Routes>
     </BrowserRouter>

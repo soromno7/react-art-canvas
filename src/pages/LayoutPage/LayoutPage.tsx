@@ -48,11 +48,11 @@ const LayoutPage = () => {
   return (
     <>
       <header className="header">
-        <div className="create">
+        <div className="create" onClick={() => navigate('/paint')}>
           <GoPlus size="30px" />
           <span className="create__text">Create</span>
         </div>
-        <div className="logo">
+        <div className="logo" onClick={() => navigate('/')}>
           <TbBrush size="40px" />
           <span>ArtCanvas</span>
         </div>
