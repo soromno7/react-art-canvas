@@ -1,9 +1,15 @@
-// import type { FirebaseApp } from "firebase/app";
 import type { Auth } from "firebase/auth";
 import type { Firestore } from "firebase/firestore";
 
 export interface IFirebaseContextType {
-  // firebaseApp: FirebaseApp,
   auth: Auth,
   firestore: Firestore;
+}
+
+export interface ISavedImage {
+  id: string;
+  title: string;
+  imageUrl: string;
+  createdAt: number;
+  storagePath: string;
 }

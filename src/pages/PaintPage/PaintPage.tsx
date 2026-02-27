@@ -1,6 +1,5 @@
 import "./paint.scss";
 import { GoPencil } from "react-icons/go";
-import { IoColorFillOutline } from "react-icons/io5";
 import { GoHorizontalRule } from "react-icons/go";
 import { PiTriangle } from "react-icons/pi";
 import { GoCircle } from "react-icons/go";
@@ -17,7 +16,8 @@ function PaintPage() {
   const [tool, setTool] = useState<ToolType>("pencil");
   const [isDrawing, setIsDrawing] = useState<boolean>(false);
   const [startPoint, setStartPoint] = useState<IPoint>({ x: 0, y: 0 });
-  const [currentPoint, setCurrentPoint] = useState<IPoint>({ x: 0, y: 0 });
+  const [color, setColor] = useState("#000000");
+  const [brushSize, setBrushSize] = useState(5);
 
   const [history, setHistory] = useState<ImageData[]>([]);
 
@@ -32,10 +32,6 @@ function PaintPage() {
 
     saveHistory();
   }, []);
-
-  useEffect(() => {
-    console.log(history);
-  }, [history]);
 
   const getCanvasFunc = () => {
     const canvas = canvasRef.current;
@@ -65,9 +61,8 @@ function PaintPage() {
   };
 
   const undoHandler = () => {
-    console.log(history);
-
     if (history.length <= 1) return;
+
     const { canvas, canvasContext } = getCanvasFunc();
     canvasContext?.putImageData(history[history.length - 2], 0, 0);
     const newHistory = history.slice(0, -1);
@@ -78,14 +73,12 @@ function PaintPage() {
     const { offsetX, offsetY } = e.nativeEvent;
     setIsDrawing(true);
     setStartPoint({ x: offsetX, y: offsetY });
-    setCurrentPoint({ x: offsetX, y: offsetY });
   };
 
   const stopDrawingHandler = () => {
     if (!isDrawing || !startPoint) return;
     setIsDrawing(false);
     setStartPoint({ x: 0, y: 0 });
-    setCurrentPoint({ x: 0, y: 0 });
     saveHistory();
   };
 
@@ -98,14 +91,91 @@ function PaintPage() {
     saveHistory();
   };
 
+  const restoreCanvasHandler = () => {
+    const { canvas, canvasContext } = getCanvasFunc();
+    if (!canvasContext || !canvas) return;
+
+    if (history.length > 0) {
+      canvasContext.putImageData(history[history.length - 1], 0, 0);
+    }
+  };
+
   const pencilHandler = (currentPosition: IPoint) => {
     const { canvas, canvasContext } = getCanvasFunc();
     if (!canvas || !canvasContext) return;
     canvasContext.beginPath();
     canvasContext.moveTo(startPoint.x, startPoint.y);
     canvasContext.lineTo(currentPosition.x, currentPosition.y);
+    canvasContext.lineWidth = brushSize;
+    if (tool === "eraser") {
+      canvasContext.strokeStyle = "#ffffff";
+      console.log("eraser");
+    } else {
+      canvasContext.strokeStyle = color;
+    }
     canvasContext.stroke();
     setStartPoint(currentPosition);
+  };
+
+  const lineHandler = (startPoint: IPoint, endPoint: IPoint) => {
+    const { canvas, canvasContext } = getCanvasFunc();
+    if (!canvas || !canvasContext) return;
+
+    canvasContext.beginPath();
+    canvasContext.moveTo(startPoint.x, startPoint.y);
+    canvasContext.lineTo(endPoint.x, endPoint.y);
+    canvasContext.lineWidth = brushSize;
+    canvasContext.strokeStyle = color;
+    canvasContext.stroke();
+  };
+
+  const triangleHandler = (startPoint: IPoint, endPoint: IPoint) => {
+    const { canvas, canvasContext } = getCanvasFunc();
+    if (!canvas || !canvasContext) return;
+
+    const midPoint = {
+      x: (startPoint.x + endPoint.x) / 2,
+      y: (startPoint.y + endPoint.y) / 2,
+    };
+
+    const diffX = endPoint.x - startPoint.x;
+    const diffY = endPoint.y - startPoint.y;
+
+    const thirdPoint = {
+      x: midPoint.x - diffY * 0.5,
+      y: midPoint.y + diffX * 0.5,
+    };
+
+    canvasContext.beginPath();
+    canvasContext.moveTo(startPoint.x, startPoint.y);
+    canvasContext.lineTo(endPoint.x, endPoint.y);
+    canvasContext.lineTo(thirdPoint.x, thirdPoint.y);
+    canvasContext.closePath();
+    canvasContext.stroke();
+  };
+
+  const circleHandler = (startPoint: IPoint, endPoint: IPoint) => {
+    const { canvas, canvasContext } = getCanvasFunc();
+    if (!canvas || !canvasContext) return;
+
+    const radius = Math.sqrt(
+      Math.pow(endPoint.x - startPoint.x, 2) +
+        Math.pow(endPoint.y - startPoint.y, 2),
+    );
+
+    canvasContext.beginPath();
+    canvasContext.arc(startPoint.x, startPoint.y, radius, 0, 2 * Math.PI);
+    canvasContext.stroke();
+  };
+
+  const rectangleHandler = (startPoint: IPoint, endPoint: IPoint) => {
+    const { canvas, canvasContext } = getCanvasFunc();
+    if (!canvas || !canvasContext) return;
+
+    const width = endPoint.x - startPoint.x;
+    const height = endPoint.y - startPoint.y;
+
+    canvasContext.strokeRect(startPoint.x, endPoint.y, width, height);
   };
 
   const canvasHandler = (e: React.MouseEvent) => {
@@ -119,6 +189,31 @@ function PaintPage() {
 
     if (tool === "pencil" || tool === "eraser") {
       pencilHandler(currentPosition);
+    } else {
+      restoreCanvasHandler();
+
+      canvasContext.save();
+      canvasContext.strokeStyle = color;
+      canvasContext.lineWidth = brushSize;
+
+      switch (tool) {
+        case "line": {
+          lineHandler(startPoint, currentPosition);
+          break;
+        }
+        case "triangle": {
+          triangleHandler(startPoint, currentPosition);
+          break;
+        }
+        case "circle": {
+          circleHandler(startPoint, currentPosition);
+          break;
+        }
+        case "rectangle": {
+          rectangleHandler(startPoint, currentPosition);
+          break;
+        }
+      }
     }
   };
 
@@ -139,9 +234,6 @@ function PaintPage() {
         </button>
         <button className="action__button" onClick={() => setTool("rectangle")}>
           <PiRectangle size="25px" aria-label="rectangle" />
-        </button>
-        <button className="action__button" onClick={() => setTool("fill")}>
-          <IoColorFillOutline size="25px" aria-label="fill" />
         </button>
         <button className="action__button" onClick={() => setTool("eraser")}>
           <LuEraser size="25px" aria-label="eraser" />
@@ -172,6 +264,27 @@ function PaintPage() {
             Use more modern browser to proceed
           </canvas>
         </main>
+        <aside className="paint__aside">
+          <button className="action__button">
+            <input
+              type="color"
+              value={color}
+              onChange={(e) => setColor(e.target.value)}
+              className="color__input"
+            />
+          </button>
+          <div className="brush-size">
+            <input
+              type="range"
+              min="1"
+              max="20"
+              value={brushSize}
+              onChange={(e) => setBrushSize(parseInt(e.target.value))}
+              className="brush-size__input"
+            />
+            <span>{brushSize} px</span>
+          </div>
+        </aside>
       </div>
     </div>
   );
