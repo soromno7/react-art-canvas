@@ -1,13 +1,13 @@
 import { Navigate } from "react-router-dom";
-import { useAuthState } from "../../firebase/useAuthState";
 import LoaderComponent from "../LoaderComponent/LoaderComponent";
+import { useAuth } from "../../supabase/useAuth";
 
 interface PrivateRouteProps {
   children: React.ReactNode;
 }
 
 const PrivateRoute = ({ children }: PrivateRouteProps) => {
-  const { user, loading } = useAuthState();
+  const { user, loading } = useAuth();
 
   if (loading) {
     return <LoaderComponent />;

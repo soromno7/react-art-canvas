@@ -6,13 +6,12 @@ import { FaUserCircle } from "react-icons/fa";
 import { GoPlus } from "react-icons/go";
 import { FiLogOut } from "react-icons/fi";
 import { Outlet, useNavigate } from "react-router-dom";
-import { useAuthState } from "../../firebase/useAuthState";
 import { useState, useRef, useEffect } from "react";
-import { signOut } from "firebase/auth";
-import { auth } from "../../firebase/config";
+import { supabase } from "../../supabase/config";
+import { useAuth } from "../../supabase/useAuth";
 
 const LayoutPage = () => {
-  const { user } = useAuthState();
+  const { user } = useAuth();
   const [isOpen, setIsOpen] = useState(false);
   const [isDarkTheme, setIsDarkTheme] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -37,7 +36,7 @@ const LayoutPage = () => {
 
   const handleLogout = async () => {
     try {
-      await signOut(auth);
+      await supabase.auth.signOut();
       setIsOpen(false);
       navigate("/login");
     } catch (error) {
@@ -48,11 +47,11 @@ const LayoutPage = () => {
   return (
     <>
       <header className="header">
-        <div className="create" onClick={() => navigate('/paint')}>
+        <div className="create" onClick={() => navigate("/paint")}>
           <GoPlus size="30px" />
           <span className="create__text">Create</span>
         </div>
-        <div className="logo" onClick={() => navigate('/')}>
+        <div className="logo" onClick={() => navigate("/")}>
           <TbBrush size="40px" />
           <span>ArtCanvas</span>
         </div>
@@ -60,19 +59,15 @@ const LayoutPage = () => {
           <div className="user__theme">
             {isDarkTheme ? <FaRegSun size="20px" /> : <FaRegMoon size="20px" />}
           </div>
-          <div className="user__data" ref={userDataRef} onClick={() => setIsOpen(!isOpen)}>
+          <div
+            className="user__data"
+            ref={userDataRef}
+            onClick={() => setIsOpen(!isOpen)}
+          >
             <div className="user__icon">
-              {user?.photoURL ? (
-                <img
-                  className="icon__inner"
-                  src={user?.photoURL}
-                  alt="avatar"
-                />
-              ) : (
-                <FaUserCircle size="40px" />
-              )}
+              <FaUserCircle size="40px" />
             </div>
-            <span className="user__name">{user?.displayName}</span>
+            <span className="user__name">{user?.email}</span>
           </div>
           {isOpen && (
             <div className="user__dropdown" ref={dropdownRef}>

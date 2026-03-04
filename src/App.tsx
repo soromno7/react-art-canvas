@@ -1,8 +1,8 @@
+import "./reset.scss";
 import LayoutPage from "./pages/LayoutPage/LayoutPage";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import "./reset.scss";
 import MainPage from "./pages/MainPage/MainPage";
-import LoginPage from "./pages/AuthPage/AuthPage";
+import AuthPage from "./pages/AuthPage/AuthPage";
 import PublicRoute from "./components/Routes/PublicRote";
 import PrivateRoute from "./components/Routes/PrivateRoute";
 import PaintPage from "./pages/PaintPage/PaintPage";
@@ -14,7 +14,15 @@ function App() {
           path="/login"
           element={
             <PublicRoute>
-              <LoginPage />
+              <AuthPage />
+            </PublicRoute>
+          }
+        />
+        <Route
+          path="/sign-up"
+          element={
+            <PublicRoute>
+              <AuthPage />
             </PublicRoute>
           }
         />

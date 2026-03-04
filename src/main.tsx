@@ -1,18 +1,9 @@
-import { createContext, useContext } from "react";
 import { createRoot } from "react-dom/client";
 import App from "./App.tsx";
-import type { IFirebaseContextType } from "./firebase/types.tsx";
-import { auth, firestore } from "./firebase/config.tsx";
-
-export const Context = createContext<IFirebaseContextType | null>(null);
+import { AuthProvider } from "./supabase/useAuth.tsx";
 
 createRoot(document.getElementById("root")!).render(
-  <Context.Provider
-    value={{
-      auth,
-      firestore,
-    }}
-  >
+  <AuthProvider>
     <App />
-  </Context.Provider>,
+  </AuthProvider>,
 );

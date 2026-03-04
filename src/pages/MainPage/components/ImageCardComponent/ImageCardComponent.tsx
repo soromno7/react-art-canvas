@@ -1,25 +1,36 @@
-import testImage from "./test.jpg";
 import { FaUserCircle } from "react-icons/fa";
 
 import "./image-card.scss";
 
-function ImageCardComponent() {
+interface IUserCard {
+  id: number;
+  author_name: string;
+  title: string;
+  image_url: string;
+  created_at: string;
+}
+
+function ImageCardComponent({
+  author_name: username,
+  created_at: date,
+  title,
+  image_url: imageURL,
+}: IUserCard) {
+  const formattedDate = new Date(date).toLocaleDateString();
   return (
     <div className="image_card_item">
       <div className="card_item__image">
-        <img src={testImage} />
+        <img src={imageURL} />
       </div>
       <div className="card_item__data">
         <div className="card_item_data__top">
           <div className="card_item__user">
-            {/* <div className="card_item_user__image"> */}
-              <FaUserCircle className="card_item_user__image" size="30px" />
-            {/* </div> */}
-            <span className="card_item_user__name">nonameduser</span>
+            <FaUserCircle className="card_item_user__image" size="30px" />
+            <span className="card_item_user__name">{username}</span>
           </div>
-          <span className="card_item__date">3 hours ago</span>
+          <span className="card_item__date">{formattedDate}</span>
         </div>
-        <h3 className="card_item__title">some stupid shit i created</h3>
+        <h3 className="card_item__title">{title}</h3>
       </div>
     </div>
   );

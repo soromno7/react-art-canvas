@@ -1,3 +1,68 @@
+.modal {
+  &__overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.7);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+  }
+
+  &__content {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    max-width: 500px;
+    width: 90%;
+    max-height: 80vh;
+    animation: slideIn 0.3s ease;
+  }
+
+  &__input {
+    width: 300px;
+    height: 30px;
+    background: #f0efef;
+    border: none;
+    border-radius: 10px;
+    padding-left: 8px;
+    font-size: 0.95rem;
+    outline: none;
+    margin: 10px 0 10px 0;
+  }
+
+  &__button {
+    padding: 10px 30px;
+    border: none;
+    border-radius: 20px;
+    font-weight: bold;
+    font-size: 16px;
+    cursor: pointer;
+    margin-bottom: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateY(-50px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
 .paint {
   &__wrapper {
     background: #f8f9fb;
