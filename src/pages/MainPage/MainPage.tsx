@@ -23,7 +23,6 @@ function MainPage() {
     try {
       const data = await getAllDrawings();
       setDrawings(data);
-      console.log(data);
     } catch (error) {
       console.error("Error loading drawings:", error);
     } finally {
@@ -35,7 +34,6 @@ function MainPage() {
 
   return (
     <main className="main">
-      <h1 className="main__header">Your journey begins here</h1>
       <div className="main__item-list">
         {drawings.length === 0 ? (
           <span>No</span>

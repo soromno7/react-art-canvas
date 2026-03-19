@@ -62,7 +62,6 @@ function PaintPage() {
       console.log(result.error);
     }
 
-    console.log(result);
     setIsModalOpen(false);
     navigate('/')
   };

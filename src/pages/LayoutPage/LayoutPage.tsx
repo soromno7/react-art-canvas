@@ -9,11 +9,12 @@ import { Outlet, useNavigate } from "react-router-dom";
 import { useState, useRef, useEffect } from "react";
 import { supabase } from "../../supabase/config";
 import { useAuth } from "../../supabase/useAuth";
+import { useTheme } from "../../components/ThemeProvider/ThemeProvider";
 
 const LayoutPage = () => {
   const { user } = useAuth();
+  const { theme, toggleTheme } = useTheme();
   const [isOpen, setIsOpen] = useState(false);
-  const [isDarkTheme, setIsDarkTheme] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const userDataRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
@@ -56,8 +57,8 @@ const LayoutPage = () => {
           <span>ArtCanvas</span>
         </div>
         <div className="user">
-          <div className="user__theme">
-            {isDarkTheme ? <FaRegSun size="20px" /> : <FaRegMoon size="20px" />}
+          <div className="user__theme" onClick={() => toggleTheme()}>
+            {theme === 'light' ? <FaRegMoon size="20px" /> : <FaRegSun size="20px" />}
           </div>
           <div
             className="user__data"
